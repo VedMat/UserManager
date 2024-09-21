@@ -35,5 +35,9 @@ namespace UserManager.Models
         public ICollection<User> Clients { get; set; }
 
         public ICollection<Resource> Resources { get; set; }
+
+        // Fields for password reset
+        public string PasswordResetToken { get; set; }
+        public DateTime? PasswordResetTokenExpires { get; set; }
     }
 }
