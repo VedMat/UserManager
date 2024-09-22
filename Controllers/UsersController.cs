@@ -37,7 +37,7 @@ namespace UserManager.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(ApiResponse<string>))]
         public async Task<IActionResult> CreateManager([FromBody] RegisterDto model)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid)    
             {
                 return BadRequest(ApiResponse<string>.ErrorResponse("Model data invalid"));
             }
