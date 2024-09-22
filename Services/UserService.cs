@@ -32,10 +32,10 @@ namespace UserManager.Services
             return user;
         }
 
-        public async Task<(bool Success, string Message)> CreateUserAsync(RegisterDto model, UserRole role)
+        public async Task<ServiceResponse<string>> CreateUserAsync(RegisterDto model, UserRole role)
         {
             if (_context.Users.Any(x => x.Email == model.Email))
-                return (false, "Email is already taken");
+                return new ServiceResponse<string>("", false, "Email is already taken");
 
             var user = _mapper.Map<User>(model);
             user.Id = Guid.NewGuid();
@@ -45,13 +45,13 @@ namespace UserManager.Services
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return (true, "User created successfully");
+            return new ServiceResponse<string>("", true, "User created successfully");
         }
 
-        public async Task<(bool Success, string Message)> CreateClientAsync(RegisterDto model, Guid managerId)
+        public async Task<ServiceResponse<string>> CreateClientAsync(RegisterDto model, Guid managerId)
         {
             if (_context.Users.Any(x => x.Email == model.Email))
-                return (false, "Email is already taken");
+                return new ServiceResponse<string>("", false, "Email is already taken");
 
             var user = _mapper.Map<User>(model);
             user.Id = Guid.NewGuid();
@@ -62,7 +62,7 @@ namespace UserManager.Services
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return (true, "Client created successfully");
+            return new ServiceResponse<string>("", true, "Client created successfully");
         }
 
         public User GetById(Guid userId)
@@ -70,11 +70,11 @@ namespace UserManager.Services
             return _context.Users.Find(userId);
         }
 
-        public async Task<(bool Success, string Message)> UpdateUserAsync(Guid userId, RegisterDto model)
+        public async Task<ServiceResponse<User>> UpdateUserAsync(Guid userId, RegisterDto model)
         {
             var user = _context.Users.Find(userId);
             if (user == null)
-                return (false, "User not found");
+                return new ServiceResponse<User>(null, false, "User not found");
 
             user.Email = model.Email;
             user.PasswordHash = _passwordHasher.HashPassword(user, model.Password);
@@ -82,19 +82,19 @@ namespace UserManager.Services
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
 
-            return (true, "Profile updated successfully");
+            return new ServiceResponse<User>(user, true, "Profile updated successfully");
         }
 
-        public async Task<(bool Success, string Message)> DeleteUserAsync(Guid userId)
+        public async Task<ServiceResponse<string>> DeleteUserAsync(Guid userId)
         {
             var user = _context.Users.Find(userId);
             if (user == null)
-                return (false, "User not found");
+                return new ServiceResponse<string>("", false, "User not found");
 
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
 
-            return (true, "Profile deleted successfully");
+            return new ServiceResponse<string>("", true, "Profile deleted successfully");
         }
     }
 }

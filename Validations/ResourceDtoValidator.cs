@@ -8,7 +8,7 @@ namespace UserManager.Validations
         public ResourceDtoValidator()
         {
             RuleFor(x => x.Title).NotEmpty().WithMessage("Title is required");
-            RuleFor(x => x.Url).NotEmpty().WithMessage("URL is required").Must(BeAValidUrl).WithMessage("Invalid URL");
+            RuleFor(x => x.Url).NotEmpty().WithMessage("Description is required");
         }
 
         private bool BeAValidUrl(string url)

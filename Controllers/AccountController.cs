@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,8 @@ namespace UserManager.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Produces("application/json")]
+    [Authorize]
     public class AccountController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -30,29 +33,45 @@ namespace UserManager.Controllers
             _passwordHasher = new PasswordHasher<User>();
         }
 
+        /// <summary>
+        /// Autentica un utente e restituisce un token JWT.
+        /// </summary>
+        /// <param name="model">Credenziali di login.</param>
+        /// <returns>Token JWT se l'autenticazione ha successo.</returns>
         [HttpPost("login")]
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<string>))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiResponse<string>))]
         public IActionResult Login([FromBody] LoginDto model)
         {
             var user = _userService.Authenticate(model.Email, model.Password);
             if (user == null)
-                return Unauthorized(new { message = "Invalid credentials" });
+                return Unauthorized(ApiResponse<string>.ErrorResponse("Invalid credentials"));
 
             var token = JwtHelper.GenerateJwtToken(user, _configuration);
 
-            return Ok(new { token });
+            return Ok(ApiResponse<string>.SuccessResponse(token, "Login successful"));
         }
 
+        /// <summary>
+        /// Richiede un reset della password inviando un token all'email dell'utente.
+        /// </summary>
+        /// <param name="model">Dettagli per il reset della password.</param>
+        /// <returns>Conferma della generazione del token.</returns>
         [HttpPost("requestpasswordreset")]
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<string>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiResponse<string>))]
         public async Task<IActionResult> RequestPasswordReset([FromBody] RequestPasswordResetDto model)
         {
             if (string.IsNullOrWhiteSpace(model.Email))
             {
-                return BadRequest("Email is required.");
+                return BadRequest(ApiResponse<string>.ErrorResponse("Email is required"));
             }
 
             var user = await _context.Users.SingleOrDefaultAsync(u => u.Email == model.Email);
             if (user == null)
-                return Ok(new { message = "If the email is registered, a password reset link will be sent." });
+                return Ok(ApiResponse<string>.SuccessResponse(null, "If the email is registered, a password reset link will be sent"));
 
             // Generate a secure token
             user.PasswordResetToken = GenerateSecureToken();
@@ -62,36 +81,43 @@ namespace UserManager.Controllers
             _context.Update(user);
             await _context.SaveChangesAsync();
 
-            // For testing purposes, we'll return the token in the response
-            // THIS TOKEN SHOULD BE RETURNED IN A HYPERLINK TO REDIRECT IN A FORM AND RESET A PASSWORD
-            return Ok(new { message = "Password reset token generated.", token = user.PasswordResetToken });
+            // Per scopi di test, restituisce il token nella risposta
+            // QUESTO TOKEN DOVREBBE ESSERE RESTITUITO IN UN HYPERLINK PER REDIRIGERE IN UN FORM E REIMPOSTARE LA PASSWORD
+            return Ok(ApiResponse<string>.SuccessResponse(user.PasswordResetToken, "Password reset token generated"));
         }
 
+        /// <summary>
+        /// Reimposta la password dell'utente utilizzando un token valido.
+        /// </summary>
+        /// <param name="model">Dettagli per la reimpostazione della password.</param>
+        /// <returns>Conferma della reimpostazione della password.</returns>
         [HttpPost("resetpassword")]
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<string>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiResponse<string>))]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto model)
         {
             if (string.IsNullOrWhiteSpace(model.Email) ||
                 string.IsNullOrWhiteSpace(model.Token) ||
                 string.IsNullOrWhiteSpace(model.NewPassword))
             {
-                return BadRequest("All fields are required.");
+                return BadRequest(ApiResponse<string>.ErrorResponse("All fields are required"));
             }
 
             var user = await _context.Users.SingleOrDefaultAsync(u => u.Email == model.Email);
             if (user == null)
             {
-                return BadRequest("Invalid token or email.");
+                return BadRequest(ApiResponse<string>.ErrorResponse("Invalid token or email"));
             }
 
             // Validate the token
             if (user.PasswordResetToken != model.Token || user.PasswordResetTokenExpires < DateTime.UtcNow)
             {
-                return BadRequest("Invalid or expired token.");
+                return BadRequest(ApiResponse<string>.ErrorResponse("Invalid or expired token"));
             }
 
             // Hash the new password
             user.PasswordHash = _passwordHasher.HashPassword(user, model.NewPassword);
-            //user.PasswordHash = HashPassword(model.NewPassword);
 
             // Invalidate the token
             user.PasswordResetToken = "";
@@ -101,10 +127,10 @@ namespace UserManager.Controllers
             _context.Update(user);
             await _context.SaveChangesAsync();
 
-            return Ok(new { message = "Password has been reset successfully." });
+            return Ok(ApiResponse<string>.SuccessResponse("", "Password has been reset successfully"));
         }
 
-        // Utility methods
+        // Metodi di utilità
         private string GenerateSecureToken()
         {
             using (var rngCryptoServiceProvider = new RNGCryptoServiceProvider())
@@ -113,46 +139,6 @@ namespace UserManager.Controllers
                 rngCryptoServiceProvider.GetBytes(tokenData);
                 return Convert.ToBase64String(tokenData);
             }
-        }
-
-        private string HashPassword(string password)
-        {
-            // Use a secure hashing algorithm like PBKDF2
-            using (var deriveBytes = new Rfc2898DeriveBytes(password, 16, 10000))
-            {
-                byte[] salt = deriveBytes.Salt;
-                byte[] key = deriveBytes.GetBytes(32);
-
-                var hashBytes = new byte[48]; // 16 bytes salt + 32 bytes key
-                Array.Copy(salt, 0, hashBytes, 0, 16);
-                Array.Copy(key, 0, hashBytes, 16, 32);
-
-                return Convert.ToBase64String(hashBytes);
-            }
-        }
-
-        // Optional: Method to verify password hash
-        private bool VerifyPassword(string password, string storedHash)
-        {
-            var hashBytes = Convert.FromBase64String(storedHash);
-
-            var salt = new byte[16];
-            Array.Copy(hashBytes, 0, salt, 0, 16);
-
-            using (var deriveBytes = new Rfc2898DeriveBytes(password, salt, 10000))
-            {
-                byte[] key = deriveBytes.GetBytes(32);
-
-                for (int i = 0; i < 32; i++)
-                {
-                    if (hashBytes[i + 16] != key[i])
-                    {
-                        return false;
-                    }
-                }
-            }
-
-            return true;
         }
     }
 }
