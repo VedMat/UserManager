@@ -32,37 +32,39 @@ namespace UserManager.Services
             return user;
         }
 
-        public async Task<ServiceResponse<string>> CreateUserAsync(RegisterDto model, UserRole role)
+        public async Task<ServiceResponse<User>> CreateUserAsync(RegisterDto model, UserRole role)
         {
             if (_context.Users.Any(x => x.Email == model.Email))
-                return new ServiceResponse<string>("", false, "Email is already taken");
+                return new ServiceResponse<User>(null, false, "Email is already taken");
 
             var user = _mapper.Map<User>(model);
             user.Id = Guid.NewGuid();
             user.Role = role;
+            user.PasswordResetToken = "";
             user.PasswordHash = _passwordHasher.HashPassword(user, model.Password);
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return new ServiceResponse<string>("", true, "User created successfully");
+            return new ServiceResponse<User>(user, true, "User created successfully");
         }
 
-        public async Task<ServiceResponse<string>> CreateClientAsync(RegisterDto model, Guid managerId)
+        public async Task<ServiceResponse<User>> CreateClientAsync(RegisterDto model, Guid managerId)
         {
             if (_context.Users.Any(x => x.Email == model.Email))
-                return new ServiceResponse<string>("", false, "Email is already taken");
+                return new ServiceResponse<User>(null, false, "Email is already taken");
 
             var user = _mapper.Map<User>(model);
             user.Id = Guid.NewGuid();
             user.Role = UserRole.Client;
             user.ManagerId = managerId;
+            user.PasswordResetToken = "";
             user.PasswordHash = _passwordHasher.HashPassword(user, model.Password);
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return new ServiceResponse<string>("", true, "Client created successfully");
+            return new ServiceResponse<User>(user, true, "Client created successfully");
         }
 
         public User GetById(Guid userId)

@@ -81,8 +81,6 @@ namespace UserManager.Controllers
             _context.Update(user);
             await _context.SaveChangesAsync();
 
-            // Per scopi di test, restituisce il token nella risposta
-            // QUESTO TOKEN DOVREBBE ESSERE RESTITUITO IN UN HYPERLINK PER REDIRIGERE IN UN FORM E REIMPOSTARE LA PASSWORD
             return Ok(ApiResponse<string>.SuccessResponse(user.PasswordResetToken, "Password reset token generated"));
         }
 

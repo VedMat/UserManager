@@ -31,7 +31,7 @@ namespace UserManager.Controllers
         /// <returns>Conferma della creazione del manager.</returns>
         [HttpPost("managers")]
         [Authorize(Roles = "Admin")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<string>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<User>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiResponse<string>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiResponse<string>))]
         [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(ApiResponse<string>))]
@@ -39,14 +39,14 @@ namespace UserManager.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ApiResponse<string>.ErrorResponse("Dati del modello non validi"));
+                return BadRequest(ApiResponse<string>.ErrorResponse("Model data invalid"));
             }
 
             var result = await _userService.CreateUserAsync(model, UserRole.Manager);
             if (!result.Success)
                 return BadRequest(ApiResponse<string>.ErrorResponse(result.Message));
 
-            return Ok(ApiResponse<string>.SuccessResponse("", result.Message));
+            return Ok(ApiResponse<User>.SuccessResponse(result.Data, result.Message));
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace UserManager.Controllers
         /// <returns>Conferma della creazione del client.</returns>
         [HttpPost("clients")]
         [Authorize(Roles = "Manager")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<string>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<User>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiResponse<string>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiResponse<string>))]
         [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(ApiResponse<string>))]
@@ -64,7 +64,7 @@ namespace UserManager.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ApiResponse<string>.ErrorResponse("Dati del modello non validi"));
+                return BadRequest(ApiResponse<string>.ErrorResponse("Model data invalid"));
             }
 
             Guid managerId;
@@ -74,14 +74,14 @@ namespace UserManager.Controllers
             }
             catch
             {
-                return Unauthorized(ApiResponse<string>.ErrorResponse("Token utente non valido"));
+                return Unauthorized(ApiResponse<string>.ErrorResponse("User token invalid"));
             }
 
             var result = await _userService.CreateClientAsync(model, managerId);
             if (!result.Success)
                 return BadRequest(ApiResponse<string>.ErrorResponse(result.Message));
 
-            return Ok(ApiResponse<string>.SuccessResponse("", result.Message));
+            return Ok(ApiResponse<User>.SuccessResponse(result.Data, result.Message));
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace UserManager.Controllers
             }
             catch
             {
-                return Unauthorized(ApiResponse<User>.ErrorResponse("Token utente non valido"));
+                return Unauthorized(ApiResponse<User>.ErrorResponse("User token invalid"));
             }
 
             var user = _userService.GetById(userId);
@@ -123,7 +123,7 @@ namespace UserManager.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ApiResponse<string>.ErrorResponse("Dati del modello non validi"));
+                return BadRequest(ApiResponse<string>.ErrorResponse("Model data invalid"));
             }
 
             Guid userId;
@@ -133,7 +133,7 @@ namespace UserManager.Controllers
             }
             catch
             {
-                return Unauthorized(ApiResponse<User>.ErrorResponse("Token utente non valido"));
+                return Unauthorized(ApiResponse<User>.ErrorResponse("User token invalid"));
             }
 
             var result = await _userService.UpdateUserAsync(userId, model);

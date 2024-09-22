@@ -17,6 +17,7 @@ namespace UserManager.Data
             {
                 Id = Guid.NewGuid(),
                 Email = "admin@example.com",
+                PasswordResetToken="",
                 Role = UserRole.Admin
             };
             admin.PasswordHash = passwordHasher.HashPassword(admin, "Admin@123");

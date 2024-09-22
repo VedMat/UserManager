@@ -39,7 +39,7 @@ namespace UserManager.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ApiResponse<string>.ErrorResponse("Dati del modello non validi"));
+                return BadRequest(ApiResponse<string>.ErrorResponse("Model data invalid"));
             }
 
             Guid ownerId;
@@ -49,14 +49,14 @@ namespace UserManager.Controllers
             }
             catch
             {
-                return Unauthorized(ApiResponse<string>.ErrorResponse("Token utente non valido"));
+                return Unauthorized(ApiResponse<string>.ErrorResponse("User token invalid"));
             }
 
             var result = await _resourceService.CreateResourceAsync(model, ownerId);
             if (!result.Success)
                 return BadRequest(ApiResponse<string>.ErrorResponse(result.Message));
 
-            return Ok(ApiResponse<string>.SuccessResponse("", result.Message));
+            return Ok(ApiResponse<Resource>.SuccessResponse(result.Data, result.Message));
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace UserManager.Controllers
             }
             catch
             {
-                return Unauthorized(ApiResponse<List<Resource>>.ErrorResponse("Token utente non valido"));
+                return Unauthorized(ApiResponse<List<Resource>>.ErrorResponse("User token invalid"));
             }
 
             var role = User.FindFirstValue(ClaimTypes.Role);
@@ -101,7 +101,7 @@ namespace UserManager.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ApiResponse<string>.ErrorResponse("Dati del modello non validi"));
+                return BadRequest(ApiResponse<string>.ErrorResponse("Model data invalid"));
             }
 
             Guid userId;
@@ -111,14 +111,14 @@ namespace UserManager.Controllers
             }
             catch
             {
-                return Unauthorized(ApiResponse<string>.ErrorResponse("Token utente non valido"));
+                return Unauthorized(ApiResponse<string>.ErrorResponse("User token invalid"));
             }
 
             var result = await _resourceService.UpdateResourceAsync(id, model, userId);
             if (!result.Success)
                 return BadRequest(ApiResponse<string>.ErrorResponse(result.Message));
 
-            return Ok(ApiResponse<string>.SuccessResponse("", result.Message));
+            return Ok(ApiResponse<Resource>.SuccessResponse(result.Data, result.Message));
         }
 
         /// <summary>
@@ -140,7 +140,7 @@ namespace UserManager.Controllers
             }
             catch
             {
-                return Unauthorized(ApiResponse<string>.ErrorResponse("User token is not valid"));
+                return Unauthorized(ApiResponse<string>.ErrorResponse("User token invalid"));
             }
 
             var result = await _resourceService.DeleteResourceAsync(id, userId);
