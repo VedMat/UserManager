@@ -1,4 +1,4 @@
-# **userManager**  
+# **UserManager**  
 
 ![.NET Version](https://img.shields.io/badge/.NET-8.0-blue.svg) ![SQL Server](https://img.shields.io/badge/SQL%20Server-%3E%3D2017-brightgreen) ![License](https://img.shields.io/badge/License-MIT-green)  
 
