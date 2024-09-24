@@ -90,3 +90,23 @@ I test sono eseguiti con **xUnit** e coprono i tre principali controller:
 - SQL Server
 
 - xUnit (per i test)
+
+  # **App Settings example**
+	```json
+ 	{
+	  "ConnectionStrings": {
+	    "DefaultConnection": "YOUR_CONNECTION_STRING"
+	  },
+	  "Jwt": {
+	    "Key": "YUOR_SECRET_KEY",
+	    "Issuer": "UserManager",
+	    "Audience": "UserManager"
+	  },
+	  "Logging": {
+	    "LogLevel": {
+	      "Default": "Information",
+	      "Microsoft.AspNetCore": "Warning"
+	    }
+	  },
+	  "AllowedHosts": "*"
+	}
