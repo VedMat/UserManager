@@ -14,6 +14,8 @@ namespace UserManager.Models
         [Required]
         public string ProgramName { get; set; }
 
+        public double Budget {  get; set; }
+
         [Required]
         public DateTime StartDate { get; set; }
 

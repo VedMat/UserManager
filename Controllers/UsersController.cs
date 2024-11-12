@@ -29,55 +29,20 @@ namespace UserManager.Controllers
         /// </summary>
         /// <param name="model">Dettagli del manager da creare.</param>
         /// <returns>Conferma della creazione del manager.</returns>
-        [HttpPost("managers")]
+        [HttpPost("basicUser")]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<User>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiResponse<string>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiResponse<string>))]
         [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(ApiResponse<string>))]
-        public async Task<IActionResult> CreateManager([FromBody] RegisterDto model)
+        public async Task<IActionResult> CreateBasicUser([FromBody] RegisterDto model)
         {
             if (!ModelState.IsValid)    
             {
                 return BadRequest(ApiResponse<string>.ErrorResponse("Model data invalid"));
             }
 
-            var result = await _userService.CreateUserAsync(model, UserRole.Manager);
-            if (!result.Success)
-                return BadRequest(ApiResponse<string>.ErrorResponse(result.Message));
-
-            return Ok(ApiResponse<User>.SuccessResponse(result.Data, result.Message));
-        }
-
-        /// <summary>
-        /// Crea un nuovo client.
-        /// </summary>
-        /// <param name="model">Dettagli del client da creare.</param>
-        /// <returns>Conferma della creazione del client.</returns>
-        [HttpPost("clients")]
-        [Authorize(Roles = "Manager")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<User>))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiResponse<string>))]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiResponse<string>))]
-        [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(ApiResponse<string>))]
-        public async Task<IActionResult> CreateClient([FromBody] RegisterDto model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ApiResponse<string>.ErrorResponse("Model data invalid"));
-            }
-
-            Guid managerId;
-            try
-            {
-                managerId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            }
-            catch
-            {
-                return Unauthorized(ApiResponse<string>.ErrorResponse("User token invalid"));
-            }
-
-            var result = await _userService.CreateClientAsync(model, managerId);
+            var result = await _userService.CreateUserAsync(model, UserRole.Basic);
             if (!result.Success)
                 return BadRequest(ApiResponse<string>.ErrorResponse(result.Message));
 
@@ -89,7 +54,7 @@ namespace UserManager.Controllers
         /// </summary>
         /// <returns>Dettagli del profilo utente.</returns>
         [HttpGet("profile")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<User>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<UserDto>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiResponse<string>))]
         public IActionResult GetProfile()
         {
@@ -107,7 +72,8 @@ namespace UserManager.Controllers
             if (user == null)
                 return NotFound(ApiResponse<User>.ErrorResponse("Utente non trovato"));
 
-            return Ok(ApiResponse<User>.SuccessResponse(user));
+            var userDto = _mapper.Map<UserDto>(user);
+            return Ok(ApiResponse<UserDto>.SuccessResponse(userDto));
         }
 
         /// <summary>

@@ -8,6 +8,7 @@ namespace UserManager.DTOs
     {
         public string ClientName { get; set; }
         public string ProgramName { get; set; }
+        public double Budget { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         [JsonConverter(typeof(StringEnumConverter))]

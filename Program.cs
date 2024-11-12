@@ -28,6 +28,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IResourceService, ResourceService>();
 builder.Services.AddScoped<IStartupService, StartupService>();
 builder.Services.AddScoped<IStartupProgramService, StartupProgramService>();
+builder.Services.AddScoped<ISummaryHomeService, SummaryHomeService>();
 builder.Services.AddScoped<ILocationService, LocationService>();
 
 // Configure AutoMapper

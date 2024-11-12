@@ -13,7 +13,6 @@ namespace UserManager.Data
         }
 
         public DbSet<User> Users { get; set; }
-        public DbSet<Resource> Resources { get; set; }
         public DbSet<Startup> Startups { get; set; }
         public DbSet<StartupProgram> StartupPrograms { get; set; }
         public DbSet<State> States { get; set; }

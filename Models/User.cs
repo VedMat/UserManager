@@ -6,8 +6,7 @@ namespace UserManager.Models
     public enum UserRole
     {
         Admin,
-        Manager,
-        Client
+        Basic
     }
 
     public class User
@@ -31,17 +30,7 @@ namespace UserManager.Models
         [Required]
         public UserRole Role { get; set; }
 
-        // For Clients, reference to their Manager
-        public Guid? ManagerId { get; set; }
-
-        [ForeignKey("ManagerId")]
-        public User Manager { get; set; }
-
-        // For Managers, list of their Clients
-        public ICollection<User> Clients { get; set; }
-
-        public ICollection<Resource> Resources { get; set; }
-
+        public bool Active { get; set; }
         // Fields for password reset
         public string PasswordResetToken { get; set; }
         public DateTime? PasswordResetTokenExpires { get; set; }
