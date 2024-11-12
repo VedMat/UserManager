@@ -44,13 +44,18 @@ namespace UserManager.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiResponse<string>))]
         public IActionResult Login([FromBody] LoginDto model)
         {
-            var user = _userService.Authenticate(model.Email, model.Password);
+            User user = _userService.Authenticate(model.Email, model.Password);
             if (user == null)
                 return Unauthorized(ApiResponse<string>.ErrorResponse("Invalid credentials"));
 
             var token = JwtHelper.GenerateJwtToken(user, _configuration);
 
-            return Ok(ApiResponse<string>.SuccessResponse(token, "Login successful"));
+            LoginResponseDto loginResponseDto = new LoginResponseDto();
+
+            loginResponseDto.User = user;
+            loginResponseDto.Token = token;
+
+            return Ok(ApiResponse<LoginResponseDto>.SuccessResponse(loginResponseDto, "Login successful"));
         }
 
         /// <summary>

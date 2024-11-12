@@ -1,4 +1,4 @@
-﻿namespace UserManager.DTOs
+﻿namespace UserManager.Services
 {
     public class ServiceResponse<T>
     {
@@ -23,7 +23,7 @@
 
         public static ServiceResponse<T> ErrorResponse(string message)
         {
-            return new ServiceResponse<T>(default(T), false, message);
+            return new ServiceResponse<T>(default, false, message);
         }
     }
 

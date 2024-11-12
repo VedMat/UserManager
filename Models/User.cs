@@ -23,6 +23,12 @@ namespace UserManager.Models
         public string PasswordHash { get; set; }
 
         [Required]
+        public string Name { get; set; }
+
+        [Required]
+        public string Surname { get; set; }
+
+        [Required]
         public UserRole Role { get; set; }
 
         // For Clients, reference to their Manager

@@ -11,6 +11,9 @@ namespace UserManager.Helpers
         {
             CreateMap<RegisterDto, User>();
             CreateMap<ResourceDto, Resource>().ReverseMap();
+            CreateMap<StartupDto, Startup>().ReverseMap();
+            CreateMap<StartupProgramDto, StartupProgram>().ReverseMap();
+            CreateMap<Location, LocationDto>().ReverseMap();
         }
     }
 }

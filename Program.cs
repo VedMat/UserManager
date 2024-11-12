@@ -7,20 +7,28 @@ using UserManager.Data;
 using UserManager.Helpers;
 using UserManager.Services;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Converters;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllers()
-    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Program>());
 
 // Configure Entity Framework and SQL Server
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Add services to the container.
+builder.Services.AddControllers()
+    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Program>()).
+    AddNewtonsoftJson(options =>
+     {
+         options.SerializerSettings.Converters.Add(new StringEnumConverter());
+     });
 // Configure Services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IResourceService, ResourceService>();
+builder.Services.AddScoped<IStartupService, StartupService>();
+builder.Services.AddScoped<IStartupProgramService, StartupProgramService>();
+builder.Services.AddScoped<ILocationService, LocationService>();
 
 // Configure AutoMapper
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
@@ -56,6 +64,8 @@ builder.Services.AddAuthorization(options =>
 
 // Configure Swagger
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddCors();
+
 // Configure Swagger/OpenAPI
 builder.Services.AddSwaggerGen(c =>
 {
@@ -98,6 +108,10 @@ using (var scope = app.Services.CreateScope())
     var context = services.GetRequiredService<ApplicationDbContext>();
     SeedData.Initialize(context);
 }
+
+app.UseCors(options =>
+               options.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()
+           );
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
