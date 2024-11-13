@@ -17,7 +17,7 @@ namespace UserManager.Services
             _mapper = mapper;
         }
 
-        public async Task<ServiceResponse<Dictionary<string, double>>> GetSummaryHome(StartupDto startupDto)
+        public async Task<ServiceResponse<Dictionary<string, double>>> GetSummaryHome()
         {
             var summaryHome = new Dictionary<string, double>();
 

@@ -4,6 +4,8 @@ namespace UserManager.DTOs
 {
     public class StartupDto
     {
+        public Guid Id { get; set; }
+
         [Required]
         [StringLength(50)]
         public string Source { get; set; }
@@ -37,5 +39,24 @@ namespace UserManager.DTOs
         public string? PitchDeck { get; set; }
 
         public string? Note { get; set; }
+
+        public Guid? StartupProgramsId { get; set; }
+
+        public string? StartupProgramsName { get; set; }
+
+        // Nuovi campi per le informazioni di contatto
+        public string? ContactName { get; set; }
+
+        public string? ContactRole { get; set; }
+
+        [EmailAddress]
+        public string? ContactEmail { get; set; }
+
+        [Phone]
+        public string? ContactPhone { get; set; }
+
+        public string? LastContacted { get; set; }
+
+        public string? ContactNotes { get; set; }
     }
 }

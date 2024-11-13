@@ -25,11 +25,10 @@ builder.Services.AddControllers()
      });
 // Configure Services
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IResourceService, ResourceService>();
 builder.Services.AddScoped<IStartupService, StartupService>();
 builder.Services.AddScoped<IStartupProgramService, StartupProgramService>();
 builder.Services.AddScoped<ISummaryHomeService, SummaryHomeService>();
-builder.Services.AddScoped<ILocationService, LocationService>();
+builder.Services.AddSingleton<BlobStorageService>();
 
 // Configure AutoMapper
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
@@ -65,7 +64,16 @@ builder.Services.AddAuthorization(options =>
 
 // Configure Swagger
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddCors();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+});
 
 // Configure Swagger/OpenAPI
 builder.Services.AddSwaggerGen(c =>

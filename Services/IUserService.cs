@@ -6,6 +6,7 @@ namespace UserManager.Services
     public interface IUserService
     {
         User Authenticate(string email, string password);
+        Task<ServiceResponse<List<User>>> GetAllUsersAsync();
         Task<ServiceResponse<User>> CreateUserAsync(RegisterDto model, UserRole role);
         Task<ServiceResponse<User>> CreateClientAsync(RegisterDto model, Guid managerId);
         User GetById(Guid userId);

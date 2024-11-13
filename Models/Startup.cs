@@ -1,12 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace UserManager.Models
 {
     public class Startup
     {
         [Key]
-        public long Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
+
         [Required]
         public string Source { get; set; }
         [Required]
@@ -18,15 +20,32 @@ namespace UserManager.Models
         public string? Industry { get; set; }
         public string? Technology { get; set; }
         public string? Tags { get; set; }
+
         [Column(TypeName = "decimal(18, 2)")]
         public decimal? Funding { get; set; }
+
         public string? EvolutionState { get; set; }
         public string? FundStage { get; set; }
         public string? LegalNature { get; set; }
         public string? PitchDeck { get; set; }
         public string? Note { get; set; }
 
-        public string? StartupProgramId { get; set; }
-        public StartupProgram? StartupPrograms { get; set; }
+        // Aggiungi la chiave esterna per StartupProgram
+        public Guid? StartupProgramId { get; set; }
+
+        // Navigational property
+        [ForeignKey("StartupProgramId")]
+        [JsonIgnore]
+        public StartupProgram? StartupProgram { get; set; }
+
+        // Nuovi campi per le informazioni di contatto
+        public string? ContactName { get; set; }
+        public string? ContactRole { get; set; }
+        [EmailAddress]
+        public string? ContactEmail { get; set; }
+        [Phone]
+        public string? ContactPhone { get; set; }
+        public string? LastContacted { get; set; }
+        public string? ContactNotes { get; set; }
     }
 }

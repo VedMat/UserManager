@@ -44,14 +44,14 @@ namespace UserManager.Controllers
         public async Task<IActionResult> GetAllStartups()
         {
             var result = await _startupService.GetAllStartupsAsync();
-            return Ok(ApiResponse<List<Startup>>.SuccessResponse(result.Data, "Startups retrieved successfully"));
+            return Ok(ApiResponse<List<StartupDto>>.SuccessResponse(_mapper.Map<List<StartupDto>>(result.Data), "Startups retrieved successfully"));
         }
 
         // READ BY ID
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<Startup>))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiResponse<string>))]
-        public async Task<IActionResult> GetStartupById(long id)
+        public async Task<IActionResult> GetStartupById(Guid id)
         {
             var result = await _startupService.GetStartupByIdAsync(id);
             if (!result.Success)
@@ -64,7 +64,7 @@ namespace UserManager.Controllers
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<string>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiResponse<string>))]
-        public async Task<IActionResult> UpdateStartup(long id, [FromBody] StartupDto model)
+        public async Task<IActionResult> UpdateStartup(Guid id, [FromBody] StartupDto model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ApiResponse<string>.ErrorResponse("Invalid data"));
@@ -80,7 +80,7 @@ namespace UserManager.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<string>))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiResponse<string>))]
-        public async Task<IActionResult> DeleteStartup(long id)
+        public async Task<IActionResult> DeleteStartup(Guid id)
         {
             var result = await _startupService.DeleteStartupAsync(id);
             if (!result.Success)

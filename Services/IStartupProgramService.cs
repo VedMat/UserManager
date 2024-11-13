@@ -7,8 +7,8 @@ namespace UserManager.Services
     {
         Task<ServiceResponse<string>> CreateStartupProgramAsync(StartupProgramDto StartupProgramDto);
         Task<ServiceResponse<List<StartupProgram>>> GetAllStartupProgramsAsync();
-        Task<ServiceResponse<StartupProgram>> GetStartupProgramByIdAsync(long id);
-        Task<ServiceResponse<string>> UpdateStartupProgramAsync(long id, StartupProgramDto StartupProgramDto);
-        Task<ServiceResponse<string>> DeleteStartupProgramAsync(long id);
+        Task<ServiceResponse<StartupProgram>> GetStartupProgramByIdAsync(Guid id);
+        Task<ServiceResponse<string>> UpdateStartupProgramAsync(Guid id, StartupProgramDto StartupProgramDto);
+        Task<ServiceResponse<string>> DeleteStartupProgramAsync(Guid id);
     }
 }

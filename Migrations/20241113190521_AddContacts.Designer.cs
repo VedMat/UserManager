@@ -12,8 +12,8 @@ using UserManager.Data;
 namespace UserManager.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241110000946_startupRelation")]
-    partial class startupRelation
+    [Migration("20241113190521_AddContacts")]
+    partial class AddContacts
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,65 +25,26 @@ namespace UserManager.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("UserManager.Models.Location", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<double>("Latitude")
-                        .HasColumnType("float");
-
-                    b.Property<double>("Longitude")
-                        .HasColumnType("float");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("StateId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("StateId");
-
-                    b.ToTable("Locations");
-                });
-
-            modelBuilder.Entity("UserManager.Models.Resource", b =>
+            modelBuilder.Entity("UserManager.Models.Startup", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("OwnerId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
+                    b.Property<string>("ContactEmail")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Url")
-                        .IsRequired()
+                    b.Property<string>("ContactName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.Property<string>("ContactNotes")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasIndex("OwnerId");
+                    b.Property<string>("ContactPhone")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("Resources");
-                });
-
-            modelBuilder.Entity("UserManager.Models.Startup", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+                    b.Property<string>("ContactRole")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Country")
                         .HasColumnType("nvarchar(max)");
@@ -101,6 +62,9 @@ namespace UserManager.Migrations
                         .HasColumnType("decimal(18, 2)");
 
                     b.Property<string>("Industry")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastContacted")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LegalNature")
@@ -123,11 +87,8 @@ namespace UserManager.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("StartupProgramId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long?>("StartupProgramsId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid?>("StartupProgramId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Tags")
                         .HasColumnType("nvarchar(max)");
@@ -140,18 +101,19 @@ namespace UserManager.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("StartupProgramsId");
+                    b.HasIndex("StartupProgramId");
 
                     b.ToTable("Startups");
                 });
 
             modelBuilder.Entity("UserManager.Models.StartupProgram", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+                    b.Property<double>("Budget")
+                        .HasColumnType("float");
 
                     b.Property<string>("ClientName")
                         .IsRequired()
@@ -178,35 +140,22 @@ namespace UserManager.Migrations
                     b.ToTable("StartupPrograms");
                 });
 
-            modelBuilder.Entity("UserManager.Models.State", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("States");
-                });
-
             modelBuilder.Entity("UserManager.Models.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("ManagerId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
@@ -222,68 +171,22 @@ namespace UserManager.Migrations
                     b.Property<int>("Role")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.Property<string>("Surname")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasIndex("ManagerId");
+                    b.HasKey("Id");
 
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("UserManager.Models.Location", b =>
-                {
-                    b.HasOne("UserManager.Models.State", "State")
-                        .WithMany("Locations")
-                        .HasForeignKey("StateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("State");
-                });
-
-            modelBuilder.Entity("UserManager.Models.Resource", b =>
-                {
-                    b.HasOne("UserManager.Models.User", "Owner")
-                        .WithMany("Resources")
-                        .HasForeignKey("OwnerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Owner");
-                });
-
             modelBuilder.Entity("UserManager.Models.Startup", b =>
                 {
-                    b.HasOne("UserManager.Models.StartupProgram", "StartupPrograms")
-                        .WithMany("Startups")
-                        .HasForeignKey("StartupProgramsId");
+                    b.HasOne("UserManager.Models.StartupProgram", "StartupProgram")
+                        .WithMany()
+                        .HasForeignKey("StartupProgramId");
 
-                    b.Navigation("StartupPrograms");
-                });
-
-            modelBuilder.Entity("UserManager.Models.User", b =>
-                {
-                    b.HasOne("UserManager.Models.User", "Manager")
-                        .WithMany("Clients")
-                        .HasForeignKey("ManagerId");
-
-                    b.Navigation("Manager");
-                });
-
-            modelBuilder.Entity("UserManager.Models.StartupProgram", b =>
-                {
-                    b.Navigation("Startups");
-                });
-
-            modelBuilder.Entity("UserManager.Models.State", b =>
-                {
-                    b.Navigation("Locations");
-                });
-
-            modelBuilder.Entity("UserManager.Models.User", b =>
-                {
-                    b.Navigation("Clients");
-
-                    b.Navigation("Resources");
+                    b.Navigation("StartupProgram");
                 });
 #pragma warning restore 612, 618
         }

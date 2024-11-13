@@ -50,6 +50,20 @@ namespace UserManager.Controllers
         }
 
         /// <summary>
+        /// Recupera gli utenti 
+        /// </summary>
+        /// <returns>Dettagli di tutti gli utenti.</returns>
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<UserDto>))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiResponse<string>))]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            var result = await _userService.GetAllUsersAsync();
+            return Ok(ApiResponse<List<UserDto>>.SuccessResponse(_mapper.Map<List<UserDto>>(result.Data), "Startups retrieved successfully"));
+        }
+
+        /// <summary>
         /// Recupera il profilo dell'utente corrente.
         /// </summary>
         /// <returns>Dettagli del profilo utente.</returns>

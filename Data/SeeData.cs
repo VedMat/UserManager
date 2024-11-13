@@ -16,6 +16,9 @@ namespace UserManager.Data
             var admin = new User
             {
                 Id = Guid.NewGuid(),
+                Name = "Mattia",
+                Surname = "Vedovato",
+                Active = true,
                 Email = "admin@example.com",
                 PasswordResetToken="",
                 Role = UserRole.Admin

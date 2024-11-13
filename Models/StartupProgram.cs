@@ -6,7 +6,7 @@ namespace UserManager.Models
     public class StartupProgram
     {
         [Key]
-        public long Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         [Required]
         public string ClientName { get; set; }
@@ -14,7 +14,7 @@ namespace UserManager.Models
         [Required]
         public string ProgramName { get; set; }
 
-        public double Budget {  get; set; }
+        public double Budget { get; set; }
 
         [Required]
         public DateTime StartDate { get; set; }
@@ -25,7 +25,5 @@ namespace UserManager.Models
         public StartupProgramType ProgramType { get; set; }
 
         public string? Description { get; set; }
-
-        public ICollection<Startup>? Startups { get; set; }
     }
 }

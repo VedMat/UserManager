@@ -21,19 +21,32 @@ namespace UserManager.Services
         public async Task<ServiceResponse<string>> CreateStartupAsync(StartupDto startupDto)
         {
             var startup = _mapper.Map<Startup>(startupDto);
+
+            if (startupDto.StartupProgramsId != null)
+            {
+                var program = await _context.StartupPrograms
+                    .FirstOrDefaultAsync(x => x.Id == startupDto.StartupProgramsId);
+
+                if (program != null)
+                {
+                    startup.StartupProgramId = program.Id;
+                }
+            }
+
             await _context.Startups.AddAsync(startup);
             await _context.SaveChangesAsync();
 
             return ServiceResponse<string>.SuccessResponse("Startup created successfully");
         }
 
+
         public async Task<ServiceResponse<List<Startup>>> GetAllStartupsAsync()
         {
-            var startups = await _context.Startups.ToListAsync();
+            var startups = await _context.Startups.Include(x=> x.StartupProgram).ToListAsync();
             return ServiceResponse<List<Startup>>.SuccessResponse(startups, "Startups retrieved successfully");
         }
 
-        public async Task<ServiceResponse<Startup>> GetStartupByIdAsync(long id)
+        public async Task<ServiceResponse<Startup>> GetStartupByIdAsync(Guid id)
         {
             var startup = await _context.Startups.FindAsync(id);
             if (startup == null)
@@ -42,7 +55,7 @@ namespace UserManager.Services
             return ServiceResponse<Startup>.SuccessResponse(startup, "Startup retrieved successfully");
         }
 
-        public async Task<ServiceResponse<string>> UpdateStartupAsync(long id, StartupDto startupDto)
+        public async Task<ServiceResponse<string>> UpdateStartupAsync(Guid id, StartupDto startupDto)
         {
             var startup = await _context.Startups.FindAsync(id);
             if (startup == null)
@@ -55,7 +68,7 @@ namespace UserManager.Services
             return ServiceResponse<string>.SuccessResponse("Startup updated successfully");
         }
 
-        public async Task<ServiceResponse<string>> DeleteStartupAsync(long id)
+        public async Task<ServiceResponse<string>> DeleteStartupAsync(Guid id)
         {
             var startup = await _context.Startups.FindAsync(id);
             if (startup == null)

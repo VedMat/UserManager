@@ -10,9 +10,10 @@ namespace UserManager.Helpers
         public AutoMapperProfiles()
         {
             CreateMap<RegisterDto, User>();
-            CreateMap<StartupDto, Startup>().ReverseMap();
+            CreateMap<StartupDto, Startup>().ReverseMap()
+                .ForMember(dest => dest.StartupProgramsId, opt => opt.MapFrom(src => src.StartupProgram.Id))
+                .ForMember(dest => dest.StartupProgramsName, opt => opt.MapFrom(src => src.StartupProgram.ProgramName));
             CreateMap<StartupProgramDto, StartupProgram>().ReverseMap();
-            CreateMap<Location, LocationDto>().ReverseMap();
             CreateMap<User, UserDto>().ReverseMap();
         }
     }

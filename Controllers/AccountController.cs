@@ -95,13 +95,11 @@ namespace UserManager.Controllers
         /// <param name="model">Dettagli per la reimpostazione della password.</param>
         /// <returns>Conferma della reimpostazione della password.</returns>
         [HttpPost("resetpassword")]
-        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<string>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiResponse<string>))]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto model)
         {
             if (string.IsNullOrWhiteSpace(model.Email) ||
-                string.IsNullOrWhiteSpace(model.Token) ||
                 string.IsNullOrWhiteSpace(model.NewPassword))
             {
                 return BadRequest(ApiResponse<string>.ErrorResponse("All fields are required"));
@@ -114,7 +112,7 @@ namespace UserManager.Controllers
             }
 
             // Validate the token
-            if (user.PasswordResetToken != model.Token || user.PasswordResetTokenExpires < DateTime.UtcNow)
+            if (user.PasswordResetTokenExpires < DateTime.UtcNow)
             {
                 return BadRequest(ApiResponse<string>.ErrorResponse("Invalid or expired token"));
             }

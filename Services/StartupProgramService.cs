@@ -32,7 +32,7 @@ namespace UserManager.Services
             return ServiceResponse<List<StartupProgram>>.SuccessResponse(StartupPrograms, "StartupPrograms retrieved successfully");
         }
 
-        public async Task<ServiceResponse<StartupProgram>> GetStartupProgramByIdAsync(long id)
+        public async Task<ServiceResponse<StartupProgram>> GetStartupProgramByIdAsync(Guid id)
         {
             var StartupProgram = await _context.StartupPrograms.FindAsync(id);
             if (StartupProgram == null)
@@ -41,7 +41,7 @@ namespace UserManager.Services
             return ServiceResponse<StartupProgram>.SuccessResponse(StartupProgram, "StartupProgram retrieved successfully");
         }
 
-        public async Task<ServiceResponse<string>> UpdateStartupProgramAsync(long id, StartupProgramDto StartupProgramDto)
+        public async Task<ServiceResponse<string>> UpdateStartupProgramAsync(Guid id, StartupProgramDto StartupProgramDto)
         {
             var StartupProgram = await _context.StartupPrograms.FindAsync(id);
             if (StartupProgram == null)
@@ -54,7 +54,7 @@ namespace UserManager.Services
             return ServiceResponse<string>.SuccessResponse("StartupProgram updated successfully");
         }
 
-        public async Task<ServiceResponse<string>> DeleteStartupProgramAsync(long id)
+        public async Task<ServiceResponse<string>> DeleteStartupProgramAsync(Guid id)
         {
             var StartupProgram = await _context.StartupPrograms.FindAsync(id);
             if (StartupProgram == null)

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UserManager.Data;
 
@@ -11,9 +12,11 @@ using UserManager.Data;
 namespace UserManager.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241113171256_FixStartup")]
+    partial class FixStartup
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -27,21 +30,6 @@ namespace UserManager.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ContactEmail")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ContactName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ContactNotes")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ContactPhone")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ContactRole")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Country")
                         .HasColumnType("nvarchar(max)");
@@ -59,9 +47,6 @@ namespace UserManager.Migrations
                         .HasColumnType("decimal(18, 2)");
 
                     b.Property<string>("Industry")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastContacted")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LegalNature")
@@ -180,10 +165,15 @@ namespace UserManager.Migrations
             modelBuilder.Entity("UserManager.Models.Startup", b =>
                 {
                     b.HasOne("UserManager.Models.StartupProgram", "StartupProgram")
-                        .WithMany()
+                        .WithMany("Startups")
                         .HasForeignKey("StartupProgramId");
 
                     b.Navigation("StartupProgram");
+                });
+
+            modelBuilder.Entity("UserManager.Models.StartupProgram", b =>
+                {
+                    b.Navigation("Startups");
                 });
 #pragma warning restore 612, 618
         }

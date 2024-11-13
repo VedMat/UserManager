@@ -6,6 +6,7 @@ namespace UserManager.DTOs
 {
     public class StartupProgramDto
     {
+        public Guid Id { get; set; }
         public string ClientName { get; set; }
         public string ProgramName { get; set; }
         public double Budget { get; set; }

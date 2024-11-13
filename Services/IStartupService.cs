@@ -8,8 +8,8 @@ namespace UserManager.Services
     {
         Task<ServiceResponse<string>> CreateStartupAsync(StartupDto startupDto);
         Task<ServiceResponse<List<Startup>>> GetAllStartupsAsync();
-        Task<ServiceResponse<Startup>> GetStartupByIdAsync(long id);
-        Task<ServiceResponse<string>> UpdateStartupAsync(long id, StartupDto startupDto);
-        Task<ServiceResponse<string>> DeleteStartupAsync(long id);
+        Task<ServiceResponse<Startup>> GetStartupByIdAsync(Guid id);
+        Task<ServiceResponse<string>> UpdateStartupAsync(Guid id, StartupDto startupDto);
+        Task<ServiceResponse<string>> DeleteStartupAsync(Guid id);
     }
 }

@@ -52,7 +52,7 @@ namespace UserManager.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<StartupProgram>))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiResponse<string>))]
-        public async Task<IActionResult> GetStartupProgramById(long id)
+        public async Task<IActionResult> GetStartupProgramById(Guid id)
         {
             var result = await _startupProgramService.GetStartupProgramByIdAsync(id);
             if (!result.Success)
@@ -65,7 +65,7 @@ namespace UserManager.Controllers
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<string>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiResponse<string>))]
-        public async Task<IActionResult> UpdateStartupProgram(long id, [FromBody] StartupProgramDto model)
+        public async Task<IActionResult> UpdateStartupProgram(Guid id, [FromBody] StartupProgramDto model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ApiResponse<string>.ErrorResponse("Invalid data"));
@@ -81,7 +81,7 @@ namespace UserManager.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<string>))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiResponse<string>))]
-        public async Task<IActionResult> DeleteStartupProgram(long id)
+        public async Task<IActionResult> DeleteStartupProgram(Guid id)
         {
             var result = await _startupProgramService.DeleteStartupProgramAsync(id);
             if (!result.Success)
