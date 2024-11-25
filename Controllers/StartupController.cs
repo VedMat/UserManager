@@ -35,7 +35,7 @@ namespace UserManager.Controllers
             if (!result.Success)
                 return BadRequest(ApiResponse<string>.ErrorResponse(result.Message));
 
-            return Ok(ApiResponse<string>.SuccessResponse("", result.Message));
+            return Ok(ApiResponse<StartupDto>.SuccessResponse(_mapper.Map<StartupDto>(result.Data), result.Message));
         }
 
         // READ ALL

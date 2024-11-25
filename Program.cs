@@ -8,6 +8,7 @@ using UserManager.Helpers;
 using UserManager.Services;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Converters;
+using Microsoft.Extensions.Azure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -107,6 +108,11 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
+builder.Services.AddAzureClients(clientBuilder =>
+{
+    clientBuilder.AddBlobServiceClient(builder.Configuration["ConnectionStrings:AzureBlobStorage:blob"]!, preferMsi: true);
+    clientBuilder.AddQueueServiceClient(builder.Configuration["ConnectionStrings:AzureBlobStorage:queue"]!, preferMsi: true);
+});
 
 var app = builder.Build();
 
@@ -118,16 +124,15 @@ using (var scope = app.Services.CreateScope())
     SeedData.Initialize(context);
 }
 
-app.UseCors(options =>
-               options.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()
-           );
+app.UseCors("AllowAll");
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+
+//// Configure the HTTP request pipeline.
+//if (app.Environment.IsDevelopment())
+//{
+app.UseSwagger();
+app.UseSwaggerUI();
+//}
 
 app.UseHttpsRedirection();
 

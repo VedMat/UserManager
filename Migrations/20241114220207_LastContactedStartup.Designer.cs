@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UserManager.Data;
 
@@ -11,9 +12,11 @@ using UserManager.Data;
 namespace UserManager.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241114220207_LastContactedStartup")]
+    partial class LastContactedStartup
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -55,8 +58,8 @@ namespace UserManager.Migrations
                     b.Property<string>("FundStage")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Funding")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<decimal?>("Funding")
+                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<string>("Industry")
                         .HasColumnType("nvarchar(max)");
@@ -126,9 +129,8 @@ namespace UserManager.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ProgramType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("ProgramType")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");

@@ -11,7 +11,6 @@ namespace UserManager.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
     [Produces("application/json")]
     public class UsersController : ControllerBase
     {
@@ -73,6 +72,7 @@ namespace UserManager.Controllers
         public IActionResult GetProfile()
         {
             Guid userId;
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             try
             {
                 userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));

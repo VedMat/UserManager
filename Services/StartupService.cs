@@ -18,7 +18,7 @@ namespace UserManager.Services
             _mapper = mapper;
         }
 
-        public async Task<ServiceResponse<string>> CreateStartupAsync(StartupDto startupDto)
+        public async Task<ServiceResponse<Startup>> CreateStartupAsync(StartupDto startupDto)
         {
             var startup = _mapper.Map<Startup>(startupDto);
 
@@ -36,7 +36,7 @@ namespace UserManager.Services
             await _context.Startups.AddAsync(startup);
             await _context.SaveChangesAsync();
 
-            return ServiceResponse<string>.SuccessResponse("Startup created successfully");
+            return ServiceResponse<Startup>.SuccessResponse(startup, "Startup created successfully");
         }
 
 

@@ -27,8 +27,7 @@ namespace UserManager.DTOs
 
         public string? Tags { get; set; }
 
-        [Range(0, (double)decimal.MaxValue)]
-        public decimal? Funding { get; set; }
+        public string? Funding { get; set; }
 
         public string? EvolutionState { get; set; }
 

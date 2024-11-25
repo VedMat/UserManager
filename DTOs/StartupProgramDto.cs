@@ -12,8 +12,8 @@ namespace UserManager.DTOs
         public double Budget { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime? EndDate { get; set; }
-        [JsonConverter(typeof(StringEnumConverter))]
-        public StartupProgramType ProgramType { get; set; }
+        //[JsonConverter(typeof(StringEnumConverter))]
+        public string ProgramType { get; set; }
         public string? Description { get; set; }
     }
 }

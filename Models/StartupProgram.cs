@@ -22,7 +22,7 @@ namespace UserManager.Models
         public DateTime? EndDate { get; set; }
 
         [Required]
-        public StartupProgramType ProgramType { get; set; }
+        public string ProgramType { get; set; }
 
         public string? Description { get; set; }
     }

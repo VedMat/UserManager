@@ -21,8 +21,7 @@ namespace UserManager.Models
         public string? Technology { get; set; }
         public string? Tags { get; set; }
 
-        [Column(TypeName = "decimal(18, 2)")]
-        public decimal? Funding { get; set; }
+        public string? Funding { get; set; }
 
         public string? EvolutionState { get; set; }
         public string? FundStage { get; set; }
@@ -45,7 +44,7 @@ namespace UserManager.Models
         public string? ContactEmail { get; set; }
         [Phone]
         public string? ContactPhone { get; set; }
-        public string? LastContacted { get; set; }
+        public DateTime? LastContacted { get; set; }
         public string? ContactNotes { get; set; }
     }
 }
