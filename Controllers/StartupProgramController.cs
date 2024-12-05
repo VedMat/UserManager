@@ -25,7 +25,7 @@ namespace UserManager.Controllers
         // CREATE
         [HttpPost]
         //[Authorize(Roles = "Admin,User")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<string>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<StartupProgramDto>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiResponse<string>))]
         public async Task<IActionResult> CreateStartupProgram([FromBody] StartupProgramDto model)
         {
@@ -36,21 +36,21 @@ namespace UserManager.Controllers
             if (!result.Success)
                 return BadRequest(ApiResponse<string>.ErrorResponse(result.Message));
 
-            return Ok(ApiResponse<string>.SuccessResponse("", result.Message));
+            return Ok(ApiResponse<StartupProgramDto>.SuccessResponse(_mapper.Map<StartupProgramDto>(result.Data), result.Message));
         }
 
         // READ ALL
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<List<StartupProgram>>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<List<StartupProgramDto>>))]
         public async Task<IActionResult> GetAllStartupPrograms()
         {
             var result = await _startupProgramService.GetAllStartupProgramsAsync();
-            return Ok(ApiResponse<List<StartupProgram>>.SuccessResponse(result.Data, "Startup Programs retrieved successfully"));
+            return Ok(ApiResponse<List<StartupProgramDto>>.SuccessResponse(_mapper.Map<List<StartupProgramDto>>(result.Data), "Startup Programs retrieved successfully"));
         }
 
         // READ BY ID
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<StartupProgram>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<StartupProgramDto>))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiResponse<string>))]
         public async Task<IActionResult> GetStartupProgramById(Guid id)
         {
@@ -58,12 +58,12 @@ namespace UserManager.Controllers
             if (!result.Success)
                 return NotFound(ApiResponse<string>.ErrorResponse(result.Message));
 
-            return Ok(ApiResponse<StartupProgram>.SuccessResponse(result.Data, "Startup Program retrieved successfully"));
+            return Ok(ApiResponse<StartupProgramDto>.SuccessResponse(_mapper.Map<StartupProgramDto>(result.Data), "Startup Program retrieved successfully"));
         }
 
         // UPDATE
         [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<string>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<StartupProgramDto>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiResponse<string>))]
         public async Task<IActionResult> UpdateStartupProgram(Guid id, [FromBody] StartupProgramDto model)
         {
@@ -74,7 +74,7 @@ namespace UserManager.Controllers
             if (!result.Success)
                 return BadRequest(ApiResponse<string>.ErrorResponse(result.Message));
 
-            return Ok(ApiResponse<string>.SuccessResponse("", result.Message));
+            return Ok(ApiResponse<StartupProgramDto>.SuccessResponse(_mapper.Map<StartupProgramDto>(result.Data), result.Message));
         }
 
         // DELETE

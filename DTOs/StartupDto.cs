@@ -39,23 +39,10 @@ namespace UserManager.DTOs
 
         public string? Note { get; set; }
 
-        public Guid? StartupProgramsId { get; set; }
+        public Guid? StartupProgramId { get; set; }
 
-        public string? StartupProgramsName { get; set; }
+        public string? StartupProgramName { get; set; }
 
-        // Nuovi campi per le informazioni di contatto
-        public string? ContactName { get; set; }
-
-        public string? ContactRole { get; set; }
-
-        [EmailAddress]
-        public string? ContactEmail { get; set; }
-
-        [Phone]
-        public string? ContactPhone { get; set; }
-
-        public string? LastContacted { get; set; }
-
-        public string? ContactNotes { get; set; }
+        public List<Guid>? ContactIds { get; set; }
     }
 }

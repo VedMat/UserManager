@@ -11,79 +11,79 @@ namespace UserManager.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [Produces("application/json")]
-    public class StartupsController : ControllerBase
+    public class CompanysController : ControllerBase
     {
-        private readonly IStartupService _startupService;
+        private readonly ICompanyService _companyService;
         private readonly IMapper _mapper;
 
-        public StartupsController(IStartupService startupService, IMapper mapper)
+        public CompanysController(ICompanyService companyService, IMapper mapper)
         {
-            _startupService = startupService;
+            _companyService = companyService;
             _mapper = mapper;
         }
 
         // CREATE
         [HttpPost]
         [Authorize(Roles = "Admin,User")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<StartupDto>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<CompanyDto>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiResponse<string>))]
-        public async Task<IActionResult> CreateStartup([FromBody] StartupDto model)
+        public async Task<IActionResult> CreateCompany([FromBody] CompanyDto model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ApiResponse<string>.ErrorResponse("Invalid data"));
 
-            var result = await _startupService.CreateStartupAsync(model);
+            var result = await _companyService.CreateCompanyAsync(model);
             if (!result.Success)
                 return BadRequest(ApiResponse<string>.ErrorResponse(result.Message));
 
-            return Ok(ApiResponse<StartupDto>.SuccessResponse(_mapper.Map<StartupDto>(result.Data), result.Message));
+            return Ok(ApiResponse<CompanyDto>.SuccessResponse(_mapper.Map<CompanyDto>(result.Data), result.Message));
         }
 
         // READ ALL
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<List<Startup>>))]
-        public async Task<IActionResult> GetAllStartups()
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<List<Company>>))]
+        public async Task<IActionResult> GetAllCompanys()
         {
-            var result = await _startupService.GetAllStartupsAsync();
-            return Ok(ApiResponse<List<StartupDto>>.SuccessResponse(_mapper.Map<List<StartupDto>>(result.Data), "Startups retrieved successfully"));
+            var result = await _companyService.GetAllCompanysAsync();
+            return Ok(ApiResponse<List<CompanyDto>>.SuccessResponse(_mapper.Map<List<CompanyDto>>(result.Data), "Companys retrieved successfully"));
         }
 
         // READ BY ID
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<StartupDto>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<CompanyDto>))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiResponse<string>))]
-        public async Task<IActionResult> GetStartupById(Guid id)
+        public async Task<IActionResult> GetCompanyById(Guid id)
         {
-            var result = await _startupService.GetStartupByIdAsync(id);
+            var result = await _companyService.GetCompanyByIdAsync(id);
             if (!result.Success)
                 return NotFound(ApiResponse<string>.ErrorResponse(result.Message));
 
-            return Ok(ApiResponse<StartupDto>.SuccessResponse(_mapper.Map<StartupDto>(result.Data), "Startup retrieved successfully"));
+            return Ok(ApiResponse<CompanyDto>.SuccessResponse(_mapper.Map<CompanyDto>(result.Data), "Company retrieved successfully"));
         }
 
         // UPDATE
         [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<StartupDto>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<CompanyDto>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiResponse<string>))]
-        public async Task<IActionResult> UpdateStartup(Guid id, [FromBody] StartupDto model)
+        public async Task<IActionResult> UpdateCompany(Guid id, [FromBody] CompanyDto model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ApiResponse<string>.ErrorResponse("Invalid data"));
 
-            var result = await _startupService.UpdateStartupAsync(id, model);
+            var result = await _companyService.UpdateCompanyAsync(id, model);
             if (!result.Success)
                 return BadRequest(ApiResponse<string>.ErrorResponse(result.Message));
 
-            return Ok(ApiResponse<StartupDto>.SuccessResponse(_mapper.Map<StartupDto>(result.Data), result.Message));
+            return Ok(ApiResponse<CompanyDto>.SuccessResponse(_mapper.Map<CompanyDto>(result.Data), result.Message));
         }
 
         // DELETE
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<string>))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiResponse<string>))]
-        public async Task<IActionResult> DeleteStartup(Guid id)
+        public async Task<IActionResult> DeleteCompany(Guid id)
         {
-            var result = await _startupService.DeleteStartupAsync(id);
+            var result = await _companyService.DeleteCompanyAsync(id);
             if (!result.Success)
                 return NotFound(ApiResponse<string>.ErrorResponse(result.Message));
 

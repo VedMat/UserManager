@@ -22,10 +22,10 @@ namespace UserManager.Services
         {
             var startup = _mapper.Map<Startup>(startupDto);
 
-            if (startupDto.StartupProgramsId != null)
+            if (startupDto.StartupProgramId != null)
             {
                 var program = await _context.StartupPrograms
-                    .FirstOrDefaultAsync(x => x.Id == startupDto.StartupProgramsId);
+                    .FirstOrDefaultAsync(x => x.Id == startupDto.StartupProgramId);
 
                 if (program != null)
                 {
@@ -55,17 +55,18 @@ namespace UserManager.Services
             return ServiceResponse<Startup>.SuccessResponse(startup, "Startup retrieved successfully");
         }
 
-        public async Task<ServiceResponse<string>> UpdateStartupAsync(Guid id, StartupDto startupDto)
+        public async Task<ServiceResponse<Startup>> UpdateStartupAsync(Guid id, StartupDto startupDto)
         {
             var startup = await _context.Startups.FindAsync(id);
             if (startup == null)
-                return ServiceResponse<string>.ErrorResponse("Startup not found");
+                return ServiceResponse<Startup>.ErrorResponse("Startup not found");
 
             _mapper.Map(startupDto, startup);
             _context.Startups.Update(startup);
             await _context.SaveChangesAsync();
+            startup = await _context.Startups.Include(x => x.StartupProgram).FirstAsync(x => x.Id ==id);
 
-            return ServiceResponse<string>.SuccessResponse("Startup updated successfully");
+            return ServiceResponse<Startup>.SuccessResponse(startup, "Startup updated successfully");
         }
 
         public async Task<ServiceResponse<string>> DeleteStartupAsync(Guid id)

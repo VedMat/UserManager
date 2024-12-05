@@ -19,9 +19,9 @@ namespace UserManager.Services
 
         public async Task<string> DownloadFileAsync(string fileName)
         {
-                var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
-                await containerClient.CreateIfNotExistsAsync();
-                var blobClient = containerClient.GetBlobClient(fileName);
+            var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
+            await containerClient.CreateIfNotExistsAsync();
+            var blobClient = containerClient.GetBlobClient(fileName);
             var sasUri = blobClient.GenerateSasUri(Azure.Storage.Sas.BlobSasPermissions.Read, DateTimeOffset.UtcNow.AddHours(1));
             return sasUri.ToString();
         }

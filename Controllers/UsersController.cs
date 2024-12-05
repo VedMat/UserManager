@@ -95,28 +95,18 @@ namespace UserManager.Controllers
         /// </summary>
         /// <param name="model">Nuovi dettagli del profilo.</param>
         /// <returns>Conferma dell'aggiornamento del profilo.</returns>
-        [HttpPut("profile")]
+        [HttpPut("profile/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<User>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiResponse<string>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiResponse<string>))]
-        public async Task<IActionResult> UpdateProfile([FromBody] RegisterDto model)
+        public async Task<IActionResult> UpdateProfile(Guid id, [FromBody] UserDto model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ApiResponse<string>.ErrorResponse("Model data invalid"));
             }
 
-            Guid userId;
-            try
-            {
-                userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            }
-            catch
-            {
-                return Unauthorized(ApiResponse<User>.ErrorResponse("User token invalid"));
-            }
-
-            var result = await _userService.UpdateUserAsync(userId, model);
+            var result = await _userService.UpdateUserAsync(id, model);
             if (!result.Success)
                 return BadRequest(ApiResponse<string>.ErrorResponse(result.Message));
 

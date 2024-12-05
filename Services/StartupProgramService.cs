@@ -17,13 +17,13 @@ namespace UserManager.Services
             _mapper = mapper;
         }
 
-        public async Task<ServiceResponse<string>> CreateStartupProgramAsync(StartupProgramDto StartupProgramDto)
+        public async Task<ServiceResponse<StartupProgram>> CreateStartupProgramAsync(StartupProgramDto StartupProgramDto)
         {
             var StartupProgram = _mapper.Map<StartupProgram>(StartupProgramDto);
             await _context.StartupPrograms.AddAsync(StartupProgram);
             await _context.SaveChangesAsync();
 
-            return ServiceResponse<string>.SuccessResponse("StartupProgram created successfully");
+            return ServiceResponse<StartupProgram>.SuccessResponse(StartupProgram, "StartupProgram created successfully");
         }
 
         public async Task<ServiceResponse<List<StartupProgram>>> GetAllStartupProgramsAsync()
@@ -41,17 +41,17 @@ namespace UserManager.Services
             return ServiceResponse<StartupProgram>.SuccessResponse(StartupProgram, "StartupProgram retrieved successfully");
         }
 
-        public async Task<ServiceResponse<string>> UpdateStartupProgramAsync(Guid id, StartupProgramDto StartupProgramDto)
+        public async Task<ServiceResponse<StartupProgram>> UpdateStartupProgramAsync(Guid id, StartupProgramDto StartupProgramDto)
         {
             var StartupProgram = await _context.StartupPrograms.FindAsync(id);
             if (StartupProgram == null)
-                return ServiceResponse<string>.ErrorResponse("StartupProgram not found");
+                return ServiceResponse<StartupProgram>.ErrorResponse("StartupProgram not found");
 
             _mapper.Map(StartupProgramDto, StartupProgram);
             _context.StartupPrograms.Update(StartupProgram);
             await _context.SaveChangesAsync();
 
-            return ServiceResponse<string>.SuccessResponse("StartupProgram updated successfully");
+            return ServiceResponse<StartupProgram>.SuccessResponse(StartupProgram, "StartupProgram updated successfully");
         }
 
         public async Task<ServiceResponse<string>> DeleteStartupProgramAsync(Guid id)

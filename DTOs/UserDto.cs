@@ -14,7 +14,7 @@ namespace UserManager.DTOs
 
         public string Name { get; set; }
         public string Surname { get; set; }
-        public UserRole Role { get; set; }
+        public UserRole? Role { get; set; }
         public bool Active { get; set; }
     }
 }

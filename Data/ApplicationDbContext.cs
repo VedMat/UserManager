@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using UserManager.Models;
-using System.Collections.Generic;
-using UserManager.Models;
 
 namespace UserManager.Data
 {
@@ -15,5 +13,7 @@ namespace UserManager.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Startup> Startups { get; set; }
         public DbSet<StartupProgram> StartupPrograms { get; set; }
+        public DbSet<Contact> Contacts { get; set; }
+        public DbSet<Company> Companies { get; set; }
     }
 }

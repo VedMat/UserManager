@@ -29,6 +29,11 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IStartupService, StartupService>();
 builder.Services.AddScoped<IStartupProgramService, StartupProgramService>();
 builder.Services.AddScoped<ISummaryHomeService, SummaryHomeService>();
+builder.Services.AddScoped<IContactService, ContactService>();
+builder.Services.AddScoped<ICompanyService, CompanyService>();
+builder.Services.AddScoped<IImportEntityService, ImportEntityService>();
+
+
 builder.Services.AddSingleton<BlobStorageService>();
 
 // Configure AutoMapper
@@ -76,23 +81,20 @@ builder.Services.AddCors(options =>
         });
 });
 
-// Configure Swagger/OpenAPI
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "User Management API", Version = "v1" });
 
-    // Define the security scheme
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
-        Type = SecuritySchemeType.Http, // Changed to Http
+        Type = SecuritySchemeType.Http,
         Scheme = "Bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "JWT Authorization header using the Bearer scheme. \r\n\r\nEnter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer eyJhbGciOiJIUzI1NiIsInR...\""
+        Description = "Enter 'Bearer' followed by your JWT token."
     });
 
-    // Add a global security requirement
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -108,6 +110,7 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
+
 builder.Services.AddAzureClients(clientBuilder =>
 {
     clientBuilder.AddBlobServiceClient(builder.Configuration["ConnectionStrings:AzureBlobStorage:blob"]!, preferMsi: true);

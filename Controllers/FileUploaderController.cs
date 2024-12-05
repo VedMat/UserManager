@@ -1,11 +1,7 @@
 ﻿using AutoMapper;
-using Azure;
-using Azure.Storage.Blobs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using UserManager.Data;
 using UserManager.DTOs;
-using UserManager.Models;
 using UserManager.Services;
 
 namespace UserManager.Controllers

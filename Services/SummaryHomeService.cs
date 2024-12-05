@@ -28,9 +28,9 @@ namespace UserManager.Services
             double avgBudget =  program.Sum(x => x.Budget) / numPrograms;
             int another = 10000;
 
-            summaryHome.Add("Total startups", numStartups);
+            summaryHome.Add("Total Startups", numStartups);
             summaryHome.Add("Total Programs", numPrograms);
-            summaryHome.Add("Average budget", avgBudget);
+            summaryHome.Add("Average Budget", avgBudget);
             summaryHome.Add("Other", another);
             return ServiceResponse< Dictionary<string, double>>.SuccessResponse(summaryHome, "Summary home retrieved successfully");
         }

@@ -9,7 +9,7 @@ namespace UserManager.Services
         Task<ServiceResponse<Startup>> CreateStartupAsync(StartupDto startupDto);
         Task<ServiceResponse<List<Startup>>> GetAllStartupsAsync();
         Task<ServiceResponse<Startup>> GetStartupByIdAsync(Guid id);
-        Task<ServiceResponse<string>> UpdateStartupAsync(Guid id, StartupDto startupDto);
+        Task<ServiceResponse<Startup>> UpdateStartupAsync(Guid id, StartupDto startupDto);
         Task<ServiceResponse<string>> DeleteStartupAsync(Guid id);
     }
 }

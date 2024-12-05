@@ -23,7 +23,7 @@ namespace UserManager.Services
 
         public User Authenticate(string email, string password)
         {
-            var user = _context.Users.SingleOrDefault(x => x.Email == email);
+            var user = _context.Users.SingleOrDefault(x => x.Email == email && x.Active == true);
             if (user == null)
                 return null;
 
@@ -51,6 +51,7 @@ namespace UserManager.Services
             user.Role = role;
             user.PasswordResetToken = "";
             user.PasswordHash = _passwordHasher.HashPassword(user, model.Password);
+            user.Active = true;
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
@@ -58,36 +59,21 @@ namespace UserManager.Services
             return ServiceResponse<User>.SuccessResponse(user, "User created successfully");
         }
 
-        public async Task<ServiceResponse<User>> CreateClientAsync(RegisterDto model, Guid managerId)
-        {
-            if (_context.Users.Any(x => x.Email == model.Email))
-                return ServiceResponse<User>.ErrorResponse("Email is already taken");
-
-            var user = _mapper.Map<User>(model);
-            user.Id = Guid.NewGuid();
-            user.Role = UserRole.Basic;
-            user.PasswordResetToken = "";
-            user.PasswordHash = _passwordHasher.HashPassword(user, model.Password);
-
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-
-            return ServiceResponse<User>.SuccessResponse(user, "Client created successfully");
-        }
-
         public User GetById(Guid userId)
         {
             return _context.Users.Find(userId);
         }
 
-        public async Task<ServiceResponse<User>> UpdateUserAsync(Guid userId, RegisterDto model)
+        public async Task<ServiceResponse<User>> UpdateUserAsync(Guid userId, UserDto model)
         {
             var user = _context.Users.Find(userId);
             if (user == null)
                 return ServiceResponse<User>.ErrorResponse("User not found");
 
+            user.Name = model.Name;
+            user.Surname = model.Surname;
             user.Email = model.Email;
-            user.PasswordHash = _passwordHasher.HashPassword(user, model.Password);
+            user.Active = model.Active;
 
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
